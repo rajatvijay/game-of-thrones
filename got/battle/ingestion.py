@@ -98,7 +98,9 @@ class BattleIngestion:
                                      summer=summer,
                                      location=location,
                                      region=region,
-                                     note=note)
+                                     note=note,
+                                     attacker_king=attacker_king,
+                                     defender_king=defender_king)
 
                     print('\n\n\n\n')
 
