@@ -49,8 +49,8 @@ class Battle(models.Model):
     attacker_king = models.ForeignKey(King, related_name='attacked_battles', null=True, blank=True)
     defender_king = models.ForeignKey(King, related_name='defended_battles', null=True, blank=True)
 
-    attacker_commander = models.ManyToManyField(Commander, related_name='attacked_battles', blank=True)
-    defender_commander = models.ManyToManyField(Commander, related_name='defended_battles', blank=True)
+    attacker_commander = models.ManyToManyField(Commander, related_name='attacked_battles_as_commander', blank=True)
+    defender_commander = models.ManyToManyField(Commander, related_name='defended_battles_as_commander', blank=True)
 
     def __str__(self):
         return 'Battle {0}-{1}'.format(self.battle_number, self.battle_type)
