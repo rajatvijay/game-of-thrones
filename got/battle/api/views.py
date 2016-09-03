@@ -1,11 +1,14 @@
 from ..models import Battle, King
-from .serializers import BattleSerializer, StatSerializer
+from .serializers import BattleSerializer, StatsSerializer
 from got.response import JSONResponse
 from rest_framework.views import APIView
 from ..stats import Stats
 
 
 class BattleListView(APIView):
+    """
+    API View for the /list endpoint
+    """
     permission_classes = ()
 
     def get(self, request):
@@ -14,6 +17,9 @@ class BattleListView(APIView):
 
 
 class BattleDetailView(APIView):
+    """
+    API View for the detail view of the battles /battles/<pk>
+    """
     permission_classes = ()
 
     def get(self, request, pk):
@@ -21,15 +27,10 @@ class BattleDetailView(APIView):
         return JSONResponse(battle)
 
 
-# class BattleDetailView(APIView):
-#     permission_classes = ()
-#
-#     def get(self, request, pk):
-#         battle = BattleSerializer(instance=Battle.objects.get(id=pk))
-#         return JSONResponse(battle)
-#
-
 class BattleCountView(APIView):
+    """
+    API View for the count of all the records in the db /count
+    """
     permission_classes = ()
 
     def get(self, request):
@@ -37,15 +38,22 @@ class BattleCountView(APIView):
         return JSONResponse(count)
 
 
-class StatView(APIView):
+class StatsView(APIView):
+    """
+    API View for the stats of all the data in the db /stats
+    """
     permission_classes = ()
 
     def get(self, request):
-        stat = StatSerializer(instance=Stats()).data
+        stat = StatsSerializer(instance=Stats()).data
         return JSONResponse(stat)
 
 
 class SearchView(APIView):
+    """
+    API View for the search request using name, attacker_king, defender_king,
+     location, type of battle /search
+    """
     permission_classes = ()
 
     def get(self, request):

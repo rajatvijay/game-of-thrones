@@ -1,12 +1,20 @@
 import csv
 from .models import King, Commander, Battle
+from . import get_logger
 
 
 class BattleIngestion:
+    """
+    Class used to ingest battle csv into db
+    """
     def __init__(self, file_path):
+        self.logger = get_logger('Battle Ingestion'.upper())
         self.file = file_path
 
     def ingest_battles(self):
+        """
+        Reads file and ingest into db
+        """
         with open(self.file, 'rU') as csvfile:
             reader = csv.reader(csvfile)
             for row_number, row_values in enumerate(reader):
@@ -65,7 +73,7 @@ class BattleIngestion:
                     defender_king = self._get_king(king_name=defender_king)
                     battle_winner = self._parse_winner(outcome=attacker_outcome)
 
-                    print('major death = {0}, major capture = {1}, summer = {2}'.format(major_capture,
+                    self.logger.info('major death = {0}, major capture = {1}, summer = {2}'.format(major_capture,
                                                                                         major_death,
                                                                                         summer).upper())
 
@@ -73,15 +81,15 @@ class BattleIngestion:
                     major_death = self._parse_bool(number=major_death)
                     summer = self._parse_bool(number=summer)
 
-                    print('major death = {0}, major capture = {1}, summer = {2}'.format(major_capture,
+                    self.logger.info('major death = {0}, major capture = {1}, summer = {2}'.format(major_capture,
                                                                                         major_death,
                                                                                         summer).upper())
                     # raise ValueError('Stopped intentionally')
 
-                    print('Attacker commander From file  = {}'.format(attacker_commander).upper())
+                    self.logger.info('Attacker commander From file  = {}'.format(attacker_commander).upper())
                     attacker_commander = self._get_commaders(commanders_name=attacker_commander)
 
-                    print('defender commander From file  = {}'.format(defender_commander).upper())
+                    self.logger.info('defender commander From file  = {}'.format(defender_commander).upper())
                     defender_commander = self._get_commaders(commanders_name=defender_commander)
 
                     self._add_battle(attacker_commander=attacker_commander,
@@ -102,19 +110,34 @@ class BattleIngestion:
                                      attacker_king=attacker_king,
                                      defender_king=defender_king)
 
-                    print('\n\n\n\n')
+                    self.logger.info('\n\n\n\n')
 
     def _get_king(self, king_name):
+        """
+        Get or create new king record
+        :param king_name: str
+        :return: king object
+        """
         king, is_new = King.objects.get_or_create(name=king_name)
         return king
 
     def _parse_winner(self, outcome):
+        """
+        Parse the winner depending on the putcome
+        :param outcome: str
+        :return: str
+        """
         if outcome == 'win':
             return 'attacker'
         else:
             return 'defender'
 
     def _parse_bool(self, number):
+        """
+        Changes 1/0 to True/False
+        :param number:
+        :return: 1/0
+        """
         if number == 1:
             return True
         elif number == 0:
@@ -123,19 +146,31 @@ class BattleIngestion:
             return None
 
     def _get_commaders(self, commanders_name):
+        """
+        Get or create Commander objects
+        :param commanders_name: str
+        :return: Commander Onject
+        """
         commander = []
         commanders_name = commanders_name.split(', ')
         for commander_name in commanders_name:
             commander.append(Commander.objects.get_or_create(name=commander_name)[0])
 
-        print('Commader list = {}'.format(commander).upper())
+        self.logger.info('Commader list = {}'.format(commander).upper())
         return commander
 
     def _add_battle(self, attacker_commander, defender_commander, **kwargs):
+        """
+        Create Battle record and
+        Add Many-toMany fields for commanders
+        :param attacker_commander: str
+        :param defender_commander: str
+        :param kwargs: all params
+        """
         if not Battle.objects.filter(battle_number=kwargs['battle_number']).exists():
             battle = Battle.objects.create(**kwargs)
-            print('inside add battle'.upper())
-            print(attacker_commander)
+            self.logger.info('inside add battle'.upper())
+            self.logger.info(attacker_commander)
             for commander in attacker_commander:
                 battle.attacker_commander.add(commander)
 
@@ -144,9 +179,14 @@ class BattleIngestion:
 
             battle.save()
         else:
-            print('Battle {} exists'.format(kwargs['battle_number']).upper())
+            self.logger.info('Battle {} exists'.format(kwargs['battle_number']).upper())
 
     def _parse_int_field(self, field):
+        """
+        Handles null value for the int field
+        :param field: int
+        :return: None/int
+        """
         if field == '':
             return None
         else:

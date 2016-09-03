@@ -2,6 +2,9 @@ from django.db import models
 
 
 class King(models.Model):
+    """
+    Stores both the attacker and the defender kings
+    """
     name = models.CharField(max_length=20)
 
     def __str__(self):
@@ -9,6 +12,9 @@ class King(models.Model):
 
 
 class Commander(models.Model):
+    """
+    Stores both the attacker and the defender commander
+    """
     name = models.CharField(max_length=20)
 
     def __str__(self):
@@ -16,6 +22,9 @@ class Commander(models.Model):
 
 
 class Battle(models.Model):
+    """
+    Stores the battles with all the meta data
+    """
     WINNER_CHOICES = (('attacker', 'ATTACKER'),
                       ('defender', 'DEFENDER'))
 

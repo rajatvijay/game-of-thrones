@@ -3,12 +3,19 @@ from battle.models import Battle, King, Commander
 
 
 class CommanderSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the Commander model to be used in the Battle Serializer
+    """
     class Meta:
         model = Commander
         fields = ('name',)
 
 
 class BattleSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the Battle model
+
+    """
     attacker_commander = CommanderSerializer(many=True, read_only=True)
     defender_commander = CommanderSerializer(many=True, read_only=True)
     attacker_king = serializers.CharField(source='attacker_king.name', read_only=True)
@@ -17,19 +24,22 @@ class BattleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Battle
         fields = ('name',
-                   'battle_number',
-                   'year',
-                   'winner',
-                   'battle_type',
-                   'region',
-                   'attacker_commander',
-                   'defender_commander',
-                   'location',
-                   'attacker_king',
+                  'battle_number',
+                  'year',
+                  'winner',
+                  'battle_type',
+                  'region',
+                  'attacker_commander',
+                  'defender_commander',
+                  'location',
+                  'attacker_king',
                   'defender_king')
 
 
-class StatSerializer(serializers.BaseSerializer):
+class StatsSerializer(serializers.BaseSerializer):
+    """
+    Serializer for Stats class object
+    """
     def to_representation(self, instance):
         return {
            "most_active": {
