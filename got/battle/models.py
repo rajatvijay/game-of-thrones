@@ -34,7 +34,7 @@ class Battle(models.Model):
 
     name = models.CharField(max_length=20, blank=True)
     year = models.PositiveIntegerField(db_index=True, null=True, blank=True)
-    battle_number = models.PositiveIntegerField(db_index=True)
+    battle_number = models.PositiveIntegerField(db_index=True, unique=True)
     winner = models.CharField(choices=WINNER_CHOICES, max_length=20, blank=True)
     battle_type = models.CharField(choices=BATTLE_TYPE_CHOICES, max_length=20, blank=True)
     major_death = models.NullBooleanField()
