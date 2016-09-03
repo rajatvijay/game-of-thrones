@@ -5,16 +5,18 @@ from battle.models import Battle, King, Commander
 class CommanderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Commander
-        include = ('name',)
+        fields = ('name',)
 
 
 class BattleSerializer(serializers.ModelSerializer):
     attacker_commander = CommanderSerializer(many=True, read_only=True)
     defender_commander = CommanderSerializer(many=True, read_only=True)
+    attacker_king = serializers.CharField(source='attacker_king.name', read_only=True)
+    defender_king = serializers.CharField(source='defender_king.name', read_only=True)
 
     class Meta:
         model = Battle
-        include = ('name',
+        fields = ('name',
                    'battle_number',
                    'year',
                    'winner',
@@ -22,7 +24,9 @@ class BattleSerializer(serializers.ModelSerializer):
                    'region',
                    'attacker_commander',
                    'defender_commander',
-                   'location')
+                   'location',
+                   'attacker_king',
+                  'defender_king')
 
 
 class StatSerializer(serializers.BaseSerializer):
